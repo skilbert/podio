@@ -10,6 +10,9 @@ class Station{
     public void addProgram(String name, String url){
         programs.put(name, url);
     }
+    public String get(String name){
+        return programs.get(name);
+    }
     public HashMap<String, String> getPrograms(){
         return programs;
     }
