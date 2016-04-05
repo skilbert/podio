@@ -5,10 +5,11 @@ class Handler{
     private Downloader downloader;
     private Reader reader;
 
-    public Handler(String url){
-        run(url);
+    public Handler(){
+        //constructor
+        run();
     }
-    private void run(String url){
+    private void run(){
         String filename = "stations.txt";
         reader = new Reader(filename);
         reader.read();

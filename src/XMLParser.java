@@ -49,7 +49,7 @@ class XMLParser{
         }
     }
     public String[] getTitle(){
-        return tite;
+        return title;
     }
     public String[] getDescription(){
         return description;
