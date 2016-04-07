@@ -7,8 +7,8 @@ class Handler{
         run();
     }
     private void run(){
-        String filePod = "src/config/podcasts.txt";
-        String fileRad = "src/config/stations.txt";
+        String filePod = "config/podcasts.txt";
+        String fileRad = "config/stations.txt";
         
         //Mp3Player mp3Player = new Mp3Player("src/file/file.mp3");
         //mp3Player.start();
