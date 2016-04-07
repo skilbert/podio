@@ -1,6 +1,3 @@
-import java.net.*;
-import java.io.*;
-
 class Handler{
     private Downloader downloader;
     private Reader reader;
@@ -23,6 +20,6 @@ class Handler{
 
 
         this.downloader = new Downloader();
-        downloader.downloadPodcast(mp3[0]);   
+        downloader.downloadPodcast(mp3[0]);
     }
 }
