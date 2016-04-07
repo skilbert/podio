@@ -39,6 +39,6 @@ public class Mp3Player {
 	public void stop(){
 		player.stop();
 	}
-	//we need more methods.. what time is it stoped at? how long is this file? etc.
+	//we need more methods.. what time is it stopped at? how long is this file? etc.
 	
 }

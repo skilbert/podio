@@ -1,15 +1,17 @@
 import java.io.*;
-import java.util.*;
 
 class Reader{
-    private String filename;
+    private String filePod;
+    private String fileRad;
     private Podcasts podcasts;
-    public Reader(String filename){
+    private Radios radios;
+    public Reader(String filePod, String fileRad){
         System.out.println("Reader created");
-        this.filename = filename;
+        this.filePod = filePod;
+        this.fileRad = fileRad;
     }
-    public void read(){
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+    public void readPodcasts(){
+        try (BufferedReader br = new BufferedReader(new FileReader(filePod))) {
             String line;
             String station = "";
             String program = "";
@@ -31,7 +33,28 @@ class Reader{
             System.out.println(e.getMessage());
         }
     }
+    public void readRadio(){
+        try (BufferedReader br = new BufferedReader(new FileReader(fileRad))) {
+            String line;
+            String station = "";
+            radios = new Radios();
+            while ((line = br.readLine()) != null) {
+                if(line.startsWith("#")){
+                    station = line.replace("#","");
+                }else if(line.startsWith("http")){
+                	radios.addStation(station, line);
+                }
+            }
+        }
+        catch(IOException e){
+            System.out.println("Could not read config file: " +e.getMessage());
+        }
+    	
+    }
     public Podcasts getPodcasts(){
         return podcasts;
+    }
+    public Radios getRadios(){
+    	return radios;
     }
 }

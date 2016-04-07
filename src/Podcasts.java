@@ -4,7 +4,6 @@ import java.util.*;
 class Podcasts{
     HashMap<String, Station> stations;
     public Podcasts(){
-        System.out.println("Podcasts created");
         stations = new HashMap<String, Station>();
     }
     public void addStation(String name){
