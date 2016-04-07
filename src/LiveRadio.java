@@ -17,7 +17,7 @@ public class LiveRadio {
 		try{
 			in = AudioSystem.getAudioInputStream(new URL(url));
 		}catch(Exception e){
-			System.out.println("Something went wrong when creating radiostream "+e.getMessage());
+			System.out.println("Something went wrong when creating radiostream: "+e.getMessage());
 		}
 	}
 	public void start(){
