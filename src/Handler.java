@@ -8,8 +8,11 @@ class Handler{
     }
     private void run(){
         String filename = "stations.txt";
-        Mp3Player mp3Player = new Mp3Player("src/file/file.mp3");
-        mp3Player.start();
+        
+        LiveRadio liveRadio = new LiveRadio("http://lyd.nrk.no/nrk_radio_p1_ostlandssendingen_mp3_l");
+        liveRadio.start();
+        //Mp3Player mp3Player = new Mp3Player("src/file/file.mp3");
+        //mp3Player.start();
         
         //reader = new Reader(filename);
         //reader.read();
