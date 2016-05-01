@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 
 public class PiCom {
-	Serialport serialPort = null;
+	SerialPort serialPort = null;
 	
     private static final String PORT_NAMES[] = { 
  //           "/dev/tty.usbmodem", // Mac OS X
@@ -26,6 +26,10 @@ public class PiCom {
     
     private static final int TIME_OUT = 1000; // Port open timeout
     private static final int DATA_RATE = 9600; // Arduino serial port
+    
+    public PiCom(){
+    	appName = getClass().getName();
+    }
     
     public boolean initialize() {
         try {
@@ -87,7 +91,7 @@ public class PiCom {
             // open the streams and send the "y" character
             output = serialPort.getOutputStream();
             output.write( data.getBytes() );
-        } 
+        }
         catch (Exception e) {
             System.err.println(e.toString());
             System.exit(0);
@@ -129,5 +133,4 @@ public class PiCom {
             System.err.println(e.toString());
         }
     }
-        
 }
