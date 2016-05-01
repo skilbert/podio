@@ -23,7 +23,7 @@ class Handler{
         //Podcasts podcasts = reader.getPodcasts();
         
         //Station station = podcasts.get("nrk1");
-        //String urlen = station.get("dagsnytt");
+       // String urlen = station.get("dagsnytt");
 
         //XMLParser xmlParser = new XMLParser(urlen);
         //String[] mp3 = xmlParser.getMp3();
