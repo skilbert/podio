@@ -14,7 +14,7 @@ public class PiCom implements SerialPortEventListener{
     private static final String PORT_NAMES[] = { 
  //           "/dev/tty.usbmodem", // Mac OS X
  //           "/dev/usbdev", // Linux
-           "/dev/ttyACM1", // Linux
+           "/dev/ttyACM3", // Linux
 //            "/dev/serial", // Linux
     		//"/dev/sda1",
 //            "COM3", // Windows
@@ -24,19 +24,21 @@ public class PiCom implements SerialPortEventListener{
     private BufferedReader input;
     private OutputStream output;
     private Mp3Player mp3Player;
+    private LiveRadio liveRadio;
     
     private static final int TIME_OUT = 1000; // Port open timeout
     private static final int DATA_RATE = 9600; // Arduino serial port
     
-    public PiCom(Mp3Player mp3Player){
+    public PiCom(){
     	appName = getClass().getName();
-    	this.mp3Player = mp3Player;
+    	//this.mp3Player = mp3Player;
+    	//this.liveRadio = liveRadio;
     }
     
 	public void initialize() {
         // the next line is for Raspberry Pi and 
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM1");
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM3");
 	
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
@@ -115,8 +117,12 @@ public class PiCom implements SerialPortEventListener{
     	            inputLine = input.readLine();
     	            System.out.println(inputLine);
     	            
-    	            if(inputLine.equals("start 882FC156")){
+    	            if(inputLine.equals("start 90FFD0")){
+    	            	mp3Player = new Mp3Player("src/file/file.mp3");
         	            mp3Player.start();
+    	            }else if(inputLine.equals("start 882FC156")){
+    	            	mp3Player = new Mp3Player("src/file/file2.mp3");
+    	            	mp3Player.start();
     	            }
     	            if(inputLine.equals("stop")){
     	            	mp3Player.stop();

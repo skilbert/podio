@@ -10,7 +10,7 @@ class Downloader{
             URLConnection conn = new URL(url).openConnection();
             InputStream is = conn.getInputStream();
 
-            OutputStream outstream = new FileOutputStream(new File("file/file.mp3"));
+            OutputStream outstream = new FileOutputStream(new File("src/file/file2.mp3"));
             byte[] buffer = new byte[4096];
             int len;
             System.out.println("Downloading...");
