@@ -3,6 +3,10 @@
 SoftwareSerial rfid(7, 8);
 SoftwareSerial xbee(10, 9);
 
+boolean newTag = true;
+char chArray[] = "";
+String RFIDserial(chArray);
+String last = "";
 void check_for_notag(void);
 void halt(void);
 void parse(void);
@@ -37,12 +41,8 @@ void check_for_notag() {
   delay(10);
   parse();
   set_flag();
-
-  if(flag = 1){
-    seek();
-    delay(10);
-    parse();
-  }
+  
+  
 }
 
 void halt() {
@@ -64,23 +64,25 @@ void parse() {
   }
 }
 
-void print_serial() {
-  if(flag == 1){
-    //print to serial port
-    Serial.print(Str1[8], HEX);
-    Serial.print(Str1[7], HEX);
-    Serial.print(Str1[6], HEX);
-    Serial.print(Str1[5], HEX);
-    Serial.println();
-    //print to XBee module
-    xbee.print(Str1[8], HEX);
-    xbee.print(Str1[7], HEX);
-    xbee.print(Str1[6], HEX);
-    xbee.print(Str1[5], HEX);
-    xbee.println();
-    delay(100);
-    //check_for_notag();
-  }
+void print_serial()
+{
+    RFIDserial = ""; // Resetter string for nye rfider kan bli brukt
+    for(int i = 0; i < 4; i++){  
+      int p = 8 - i;
+      char b[16];  // setter opp buffer for nok plass
+      sprintf(b, "%X", Str1[p]); //konverterer hex til string
+      RFIDserial += b;  // legger neste brikke inn
+    }
+    if(RFIDserial != last){
+      last = RFIDserial;
+      delay(10);
+      if(RFIDserial == "FFFFFFFFFFFFD0"){
+        Serial.println("stop");
+      }else if(RFIDserial != "60FFD0"){
+         Serial.println("start "+RFIDserial);
+      }
+    }
+ // skriver ut til serial.monitor   
 }
 
 void read_serial() {
@@ -90,10 +92,13 @@ void read_serial() {
   set_flag();
   print_serial();
   delay(100);
+  
+
+ 
 }
 
 void seek() {
-  //search for RFID tag
+  //skal finne rfid-tag
   rfid.write((uint8_t)255);
   rfid.write((uint8_t)0);
   rfid.write((uint8_t)1);
@@ -102,11 +107,20 @@ void seek() {
   delay(10);
 }
 
-void set_flag() {
-  if(Str1[2] == 6){
+void set_flag()
+{
+  if(Str1[2] == 6){         // returnerer tag
     flag++;
   }
-  if(Str1[2] == 2){
-    flag = 0;
+  if(Str1[2] == 2){           // prosesserer eller error
+ 
+    
+    if (newTag == false){ // sjekker om rfid ligger på shield
+      flag = 0;
+      Serial.print("The RFID ");
+      Serial.print(RFIDserial);
+      Serial.println(" has left the station!");
+      newTag = true;            // Flipper så ikke output skriver det samme
+    }
   }
 }

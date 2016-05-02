@@ -10,11 +10,11 @@ class Handler{
         String filePod = "config/podcasts.txt";
         String fileRad = "config/stations.txt";
         
-        PiCom piCom = new PiCom();
-        if(piCom.initialize()){
-        	
-        }
-        //Mp3Player mp3Player = new Mp3Player("src/file/file.mp3");
+        Mp3Player mp3Player = new Mp3Player("src/file/file.mp3");
+        
+        PiCom piCom = new PiCom(mp3Player);
+        piCom.initialize();
+
         //mp3Player.start();
         
         //reader = new Reader(filePod, fileRad);

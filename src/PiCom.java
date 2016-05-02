@@ -1,5 +1,4 @@
 
-
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -9,81 +8,77 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-public class PiCom {
+public class PiCom implements SerialPortEventListener{
 	SerialPort serialPort = null;
 	
     private static final String PORT_NAMES[] = { 
  //           "/dev/tty.usbmodem", // Mac OS X
-//            "/dev/usbdev", // Linux
-//            "/dev/tty", // Linux
-            "/dev/serial", // Linux
+ //           "/dev/usbdev", // Linux
+           "/dev/ttyACM1", // Linux
+//            "/dev/serial", // Linux
+    		//"/dev/sda1",
 //            "COM3", // Windows
     };
     
     private String appName;
     private BufferedReader input;
     private OutputStream output;
+    private Mp3Player mp3Player;
     
     private static final int TIME_OUT = 1000; // Port open timeout
     private static final int DATA_RATE = 9600; // Arduino serial port
     
-    public PiCom(){
+    public PiCom(Mp3Player mp3Player){
     	appName = getClass().getName();
+    	this.mp3Player = mp3Player;
     }
     
-    public boolean initialize() {
-        try {
-            CommPortIdentifier portId = null;
-            Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+	public void initialize() {
+        // the next line is for Raspberry Pi and 
+        // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM1");
+	
+		CommPortIdentifier portId = null;
+		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+		
+		//First, Find an instance of serial port as set in PORT_NAMES.
+		while (portEnum.hasMoreElements()) {
+			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
+			for (String portName : PORT_NAMES) {
+				if (currPortId.getName().equals(portName)) {
+					portId = currPortId;
+					break;
+				}
+			}
+		}
+		if (portId == null) {
+			System.out.println("Could not find COM port.");
+			return;
+		}
+		
+		try {
+			// open serial port, and use class name for the appName.
+			serialPort = (SerialPort) portId.open(this.getClass().getName(),
+					TIME_OUT);
+		
+			// set port parameters
+			serialPort.setSerialPortParams(DATA_RATE,
+					SerialPort.DATABITS_8,
+					SerialPort.STOPBITS_1,
+					SerialPort.PARITY_NONE);
+		
+			// open the streams
+			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+			output = serialPort.getOutputStream();
+		
+			// add event listeners
+			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}
+	}
 
-            // Enumerate system ports and try connecting to Arduino over each
-            //
-            System.out.println( "Trying:");
-            while (portId == null && portEnum.hasMoreElements()) {
-                // Iterate through your host computer's serial port IDs
-                //
-                CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-                System.out.println( "   port" + currPortId.getName() );
-                for (String portName : PORT_NAMES) {
-                    if ( currPortId.getName().equals(portName) 
-                      || currPortId.getName().startsWith(portName)) {
-
-                        // Try to connect to the Arduino on this port
-                        //
-                        // Open serial port
-                        serialPort = (SerialPort)currPortId.open(appName, TIME_OUT);
-                        portId = currPortId;
-                        System.out.println( "Connected on port" + currPortId.getName() );
-                        break;
-                    }
-                }
-            }
-        
-            if (portId == null || serialPort == null) {
-                System.out.println("Oops... Could not connect to Arduino");
-                return false;
-            }
-        
-            // set port parameters
-            serialPort.setSerialPortParams(DATA_RATE,
-                            SerialPort.DATABITS_8,
-                            SerialPort.STOPBITS_1,
-                            SerialPort.PARITY_NONE);
-
-            // add event listeners
-            serialPort.addEventListener(this);
-            serialPort.notifyOnDataAvailable(true);
-
-            // Give the Arduino some time
-            try { Thread.sleep(2000); } catch (InterruptedException ie) {}
-            
-            return true;
-        }
-        catch ( Exception e ) { 
-            e.printStackTrace();
-        }
-        return false;
-    }
     private void sendData(String data) {
         try {
             System.out.println("Sending data: '" + data +"'");
@@ -113,24 +108,24 @@ public class PiCom {
     //
     public synchronized void serialEvent(SerialPortEvent oEvent) {
         //System.out.println("Event received: " + oEvent.toString());
-        try {
-            switch (oEvent.getEventType() ) {
-                case SerialPortEvent.DATA_AVAILABLE: 
-                    if ( input == null ) {
-                        input = new BufferedReader(
-                            new InputStreamReader(
-                                    serialPort.getInputStream()));
-                    }
-                    String inputLine = input.readLine();
-                    System.out.println(inputLine);
-                    break;
+    	if(oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE){
+    	    try {
+    	        String inputLine=null;
+    	        if (input.ready()) {
+    	            inputLine = input.readLine();
+    	            System.out.println(inputLine);
+    	            
+    	            if(inputLine.equals("start 882FC156")){
+        	            mp3Player.start();
+    	            }
+    	            if(inputLine.equals("stop")){
+    	            	mp3Player.stop();
+    	            }
+    	        }
 
-                default:
-                    break;
-            }
-        } 
-        catch (Exception e) {
-            System.err.println(e.toString());
-        }
+    	    } catch (Exception e) {
+    	        System.err.println(e.toString());
+    	    }
+    	}
     }
 }
