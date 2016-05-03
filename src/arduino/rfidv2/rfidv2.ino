@@ -5,6 +5,7 @@ SoftwareSerial xbee(10, 9);
 
 boolean newTag = true;
 char chArray[] = "";
+String name = ""; 
 String RFIDserial(chArray);
 String last = "";
 void check_for_notag(void);
@@ -66,6 +67,7 @@ void parse() {
 
 void print_serial()
 {
+    
     RFIDserial = ""; // Resetter string for nye rfider kan bli brukt
     for(int i = 0; i < 4; i++){  
       int p = 8 - i;
@@ -74,13 +76,14 @@ void print_serial()
       RFIDserial += b;  // legger neste brikke inn
     }
     if(RFIDserial != last){
-      last = RFIDserial;
       delay(10);
       if(RFIDserial == "FFFFFFFFFFFFD0"){
-        Serial.println("stop");
+        Serial.println("stop " + name);
       }else if(RFIDserial != "60FFD0"){
+         name = RFIDserial;
          Serial.println("start "+RFIDserial);
       }
+      last = RFIDserial;
     }
  // skriver ut til serial.monitor   
 }
