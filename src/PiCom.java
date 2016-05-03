@@ -25,6 +25,7 @@ public class PiCom implements SerialPortEventListener{
     private OutputStream output;
     private Mp3Player mp3Player1;
     private Mp3Player mp3Player2;
+    private Mp3Player mp3Player3;
     private LiveRadio liveRadio;
     
     private static final int TIME_OUT = 1000; // Port open timeout
@@ -39,6 +40,7 @@ public class PiCom implements SerialPortEventListener{
 	public void initialize() {
 		mp3Player1 = new Mp3Player("src/file/file.mp3");
 		mp3Player2 = new Mp3Player("src/file/file2.mp3");
+		mp3Player3 = new Mp3Player("src/file/file3.mp3");
         // the next line is for Raspberry Pi and 
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
         System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
@@ -121,13 +123,17 @@ public class PiCom implements SerialPortEventListener{
     	            System.out.println(inputLine);
     	            
     	            if(inputLine.equals("start 90FFD0")){	
-        	            mp3Player1.start();
+        	            mp3Player3.start();
     	            }else if(inputLine.equals("start 882FC156")){
     	            	mp3Player2.start();
+    	            }else if(inputLine.equals("start D69164E")){
+    	            	mp3Player1.start();
     	            }else if(inputLine.equals("stop 90FFD0")){
-    	            	mp3Player1.stop();
+    	            	mp3Player3.stop();
     	            }else if(inputLine.equals("stop 882FC156")){
     	            	mp3Player2.stop();
+    	            }else if(inputLine.equals("stop D69164E")){
+    	            	mp3Player1.stop();
     	            }
     	        }
 
