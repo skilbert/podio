@@ -2,23 +2,25 @@ import java.net.*;
 import java.io.*;
 
 class Downloader{
-    public Downloader(){
-        System.out.println("Downloader created");
+	private String url;
+	private String filename;
+    public Downloader(String url, String filename){
+    	this.url = url;
+    	this.filename = filename;
     }
-    public boolean downloadPodcast(String url){
-        try{
+    public void start(){
+    	System.out.println("Downloading "+filename);
+    	try{
             URLConnection conn = new URL(url).openConnection();
             InputStream is = conn.getInputStream();
 
-            OutputStream outstream = new FileOutputStream(new File("src/file/file2.mp3"));
+            OutputStream outstream = new FileOutputStream(new File("src/file/"+filename+".mp3"));
             byte[] buffer = new byte[4096];
             int len;
-            System.out.println("Downloading...");
             while ((len = is.read(buffer)) > 0) {
                 outstream.write(buffer, 0, len);
             }
             outstream.close();
-            return true;
         }
         catch(MalformedURLException e){
             System.out.println("Feil URL");
@@ -26,7 +28,6 @@ class Downloader{
         catch(IOException e){
             System.out.println(e.getMessage());
         }
-        return false;
+    	System.out.println("Done with "+filename);
     }
-    
 }

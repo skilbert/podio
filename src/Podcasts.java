@@ -24,5 +24,4 @@ class Podcasts{
     public HashMap<String, Station> getStations(){
         return stations;
     }
-
 }

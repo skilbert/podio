@@ -13,7 +13,6 @@ public class LiveRadio {
 	AudioInputStream in;
 	byte[] data = null;
 	public LiveRadio(String url){
-		System.out.println("LiveRadio generated");
 		try{
 			in = AudioSystem.getAudioInputStream(new URL(url));
 		}catch(Exception e){
