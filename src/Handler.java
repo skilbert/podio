@@ -41,6 +41,7 @@ class Handler{
         }
         
         radioArr[0].start();
+        /*
         try {
             Thread.sleep(5000);
         } catch(InterruptedException ex) {
@@ -59,15 +60,11 @@ class Handler{
         }
         
         radioArr[0].start();
+        
+        */
         //PiCom piCom = new PiCom(this);
         //piCom.initialize();
-        
-        //Mp3Player mp3Player1 = new Mp3Player("src/file/20sporsmal.mp3");
-        //mp3Player1.start();
-        //LiveRadio liveRadio = new LiveRadio(radios.get("nrk1+"));
-                
-        
-        //liveRadio.start();
+
         
     }
 }
