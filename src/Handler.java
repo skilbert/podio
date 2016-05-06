@@ -47,11 +47,7 @@ class Handler{
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-        radioArr[0].interrupt();
-        radioArr[0] = null;
-        synchronized(runntimeLOCK){
-        	runntimeLOCK.notify();
-        }
+
         
         try {
             Thread.sleep(10000);
@@ -63,8 +59,11 @@ class Handler{
         
         */
         //PiCom piCom = new PiCom(this);
-        //piCom.initialize();
-
-        
+        //piCom.initialize()
+    }
+    public void notf(){
+        synchronized(runntimeLOCK){
+        	runntimeLOCK.notify();
+        }
     }
 }

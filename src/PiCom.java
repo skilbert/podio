@@ -124,13 +124,15 @@ public class PiCom implements SerialPortEventListener{
     }
     private void handleInput(String inputLine){
         if(inputLine.equals("start 90FFD0")){	
-            handler.mp3Arr[0].start();
+            handler.radioArr[0].start();
         }else if(inputLine.equals("start 882FC156")){
         	handler.mp3Arr[1].start();
         }else if(inputLine.equals("start D69164E")){
         	handler.mp3Arr[2].start();
         }else if(inputLine.equals("stop 90FFD0")){
-        	handler.mp3Arr[0].stop();
+            handler.radioArr[0].interrupt();
+            handler.radioArr[0] = null;
+            handler.notf();
         }else if(inputLine.equals("stop 882FC156")){
         	handler.mp3Arr[1].stop();
         }else if(inputLine.equals("stop D69164E")){
