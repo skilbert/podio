@@ -10,9 +10,10 @@ class Handler{
     public String currentVersion;
     
     public Mp3Player[] mp3Arr;
-    public LiveRadio[] radioArr;
+    public Thread[] radioArr;
     
-    public static final Object LOCK = new Object();
+    public static final Object startupLOCK = new Object();
+    public static final Object runntimeLOCK = new Object();
     
     
     public Handler(){
@@ -25,25 +26,39 @@ class Handler{
         currentVersion = "config/";
         
         Thread bgThread = new Thread(new BackgroundActivities(this));
+        Thread mThread = new Thread(new Maintenance(this));
         bgThread.start();
         
-        synchronized(LOCK){
+        synchronized(startupLOCK){
         	try{
-        		System.out.println("waiting...");
-        		LOCK.wait();
+        		System.out.println("Main thread is waiting...");
+        		startupLOCK.wait();
+        	    mThread.start();
+        		System.out.println("Main thread is running again");
         	}catch(InterruptedException e){
         		e.printStackTrace();
         	}
-        	System.out.println("Waiting done");
         }
         
         radioArr[0].start();
-        System.out.println("hello");
         try {
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
+        radioArr[0].interrupt();
+        radioArr[0] = null;
+        synchronized(runntimeLOCK){
+        	runntimeLOCK.notify();
+        }
+        
+        try {
+            Thread.sleep(10000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        
+        radioArr[0].start();
         //PiCom piCom = new PiCom(this);
         //piCom.initialize();
         

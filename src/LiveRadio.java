@@ -5,9 +5,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-public class LiveRadio {
+public class LiveRadio implements Runnable{
 	private SourceDataLine line;
 	private AudioInputStream din = null;
 	AudioInputStream in;
@@ -18,6 +19,10 @@ public class LiveRadio {
 		}catch(Exception e){
 			System.out.println("Something went wrong when creating radiostream: "+e.getMessage());
 		}
+	}
+	public void run(){
+		System.out.println("Radio is playing");
+		start();
 	}
 	public void start(){
 	    try {
@@ -37,11 +42,21 @@ public class LiveRadio {
 	        line.start();
 	        int nBytesRead;
 	        while ((nBytesRead = din.read(data, 0, data.length)) != -1) {
-	            line.write(data, 0, nBytesRead);
+	        	if(Thread.currentThread().isInterrupted()){
+	        		throw new InterruptedException();
+	        	}else{
+	        		line.write(data, 0, nBytesRead);
+	        	}
 	        }
+	    }catch(LineUnavailableException e){
+	    	e.printStackTrace();
 	    }
-	    catch(Exception e) {
-	        e.printStackTrace();
+	    catch(IOException e){
+	    	e.printStackTrace();
+	    }
+	    catch(InterruptedException e) {
+	    	System.out.println("Radio was stopped");
+	    	return;
 	    }
 	    finally {
 	        if(din != null) {

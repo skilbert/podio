@@ -7,28 +7,30 @@ public class BackgroundActivities implements Runnable{
 		this.handler = handler;
 	}
 	public void run(){
-			handler.reader = new Reader(handler.filePod, handler.fileRad);
-			
-	        handler.reader.readPodcasts();
-	        handler.reader.readRadio();
-			
-			handler.podcasts = handler.reader.getPodcasts();
-			handler.radios = handler.reader.getRadios();
-			
-			priority();
-			synchronized(Handler.LOCK){
-				Handler.LOCK.notify();
-			}
-	        Updater updater = new Updater(handler.podcasts, handler.currentVersion);
-	        updater.updateEverything();
-	}
+		handler.reader = new Reader(handler.filePod, handler.fileRad);
+		
+        handler.reader.readPodcasts();
+        handler.reader.readRadio();
+		
+		handler.podcasts = handler.reader.getPodcasts();
+		handler.radios = handler.reader.getRadios();
+		
+		priority();
+				
+		synchronized(Handler.startupLOCK){
+			Handler.startupLOCK.notify();
+		}
+		Updater updater = new Updater(handler.podcasts, handler.currentVersion);
+        updater.updateEverything();
+		        
+	}       
 	/*
 	 * all the stuff that is important to get up and running at once
 	 */
-	public void priority(){
+	private void priority(){
 		int i = 0;
 		handler.mp3Arr = new Mp3Player[handler.max];
-		handler.radioArr = new LiveRadio[handler.max];
+		handler.radioArr = new Thread[handler.max];
 		try{
 			HashMap<String, Station> stationList = handler.podcasts.getStations();
 			for(Map.Entry<String,Station> stationEntry : stationList.entrySet()){
@@ -45,7 +47,8 @@ public class BackgroundActivities implements Runnable{
 			i = 0;
 			HashMap<String, String> stationList = handler.radios.getStations();
 			for(Map.Entry<String,String> stationEntry : stationList.entrySet()){
-				handler.radioArr[i] = new LiveRadio(stationEntry.getValue());
+				LiveRadio tmp = new LiveRadio(stationEntry.getValue());
+				handler.radioArr[i] = new Thread(tmp);
 			}
 			
 		}catch(Exception e){
