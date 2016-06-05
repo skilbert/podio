@@ -14,7 +14,7 @@ public class PiCom implements SerialPortEventListener{
     private static final String PORT_NAMES[] = { 
  //           "/dev/tty.usbmodem", // Mac OS X
  //           "/dev/usbdev", // Linux
-           "/dev/ttyACM0", // Linux
+           "/dev/ttyACM5", // Linux
 //            "/dev/serial", // Linux
     		//"/dev/sda1",
 //            "COM3", // Windows
@@ -36,7 +36,7 @@ public class PiCom implements SerialPortEventListener{
 	public void initialize() {
         // the next line is for Raspberry Pi and 
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM5");
 	
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
@@ -123,20 +123,69 @@ public class PiCom implements SerialPortEventListener{
     	}
     }
     private void handleInput(String inputLine){
-        if(inputLine.equals("start 90FFD0")){	
-            handler.radioArr[0].start();
-        }else if(inputLine.equals("start 882FC156")){
+        if(inputLine.equals("start 2724C2A0")){
+            handler.mp3Arr[0].start();
+        }else if(inputLine.equals("start 271E3B80")){
+        	handler.mp3Arr[0].start();
+        }else if(inputLine.equals("start 2714DFB0")){
         	handler.mp3Arr[1].start();
-        }else if(inputLine.equals("start D69164E")){
-        	handler.mp3Arr[2].start();
-        }else if(inputLine.equals("stop 90FFD0")){
-            handler.radioArr[0].interrupt();
-            handler.radioArr[0] = null;
-            handler.notf();
-        }else if(inputLine.equals("stop 882FC156")){
+        }else if(inputLine.equals("start 271C9DD0")){
+        	handler.mp3Arr[1].start();
+        }else if(inputLine.equals("start 271FC560")){
+        	handler.radioArr[0].start();
+        }else if(inputLine.equals("start 271582A0")){
+        	handler.radioArr[0].start();
+        }else if(inputLine.equals("start 271F2BF0")){
+        	handler.radioArr[1].start();
+        }else if(inputLine.equals("start 6869EE7E")){
+        	handler.radioArr[1].start();
+        }
+        
+        else if(inputLine.equals("stop 2724C2A0")){
+        	handler.mp3Arr[0].stop();
+        }else if(inputLine.equals("stop 271E3B80")){
+        	handler.mp3Arr[0].stop();
+        }else if(inputLine.equals("stop 2714DFB0")){
         	handler.mp3Arr[1].stop();
-        }else if(inputLine.equals("stop D69164E")){
-        	handler.mp3Arr[2].stop();
+        }else if(inputLine.equals("stop 271C9DD0")){
+        	handler.mp3Arr[1].stop();
+        }else if(inputLine.equals("stop 271FC560")){
+            handler.radioArr[0].interrupt();
+            try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            handler.notf();
+        }else if(inputLine.equals("stop 271582A0")){
+            handler.radioArr[0].interrupt();
+            try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+            handler.notf();
+        }else if(inputLine.equals("stop 271F2BF0")){
+            handler.radioArr[1].interrupt();
+            try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            handler.notf();
+        }else if(inputLine.equals("stop 6869EE7E")){
+            handler.radioArr[1].interrupt();
+            try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            handler.notf();
         }
     }
 }

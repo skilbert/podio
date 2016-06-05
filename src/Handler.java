@@ -29,6 +29,9 @@ class Handler{
         Thread mThread = new Thread(new Maintenance(this));
         bgThread.start();
         
+        PiCom piCom = new PiCom(this);
+        piCom.initialize();
+        
         synchronized(startupLOCK){
         	try{
         		System.out.println("Main thread is waiting...");
@@ -40,26 +43,7 @@ class Handler{
         	}
         }
         
-        radioArr[0].start();
-        /*
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
 
-        
-        try {
-            Thread.sleep(10000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        
-        radioArr[0].start();
-        
-        */
-        //PiCom piCom = new PiCom(this);
-        //piCom.initialize()
     }
     public void notf(){
         synchronized(runntimeLOCK){

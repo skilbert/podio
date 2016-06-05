@@ -40,6 +40,8 @@ public class BackgroundActivities implements Runnable{
 					i++;
 				}
 			}
+			//adds "spansk" as this is not a podcast
+			handler.mp3Arr[i] = new Mp3Player("src/file/spansk.mp3");
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
@@ -49,6 +51,7 @@ public class BackgroundActivities implements Runnable{
 			for(Map.Entry<String,String> stationEntry : stationList.entrySet()){
 				LiveRadio tmp = new LiveRadio(stationEntry.getValue());
 				handler.radioArr[i] = new Thread(tmp);
+				i++;
 			}
 			
 		}catch(Exception e){

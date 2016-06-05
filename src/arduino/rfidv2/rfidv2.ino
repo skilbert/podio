@@ -57,6 +57,7 @@ void halt() {
 
 void parse() {
   while(rfid.available()){
+    Serial.println("hello");
     if(rfid.read() == 255){
       for(int i=1;i<11;i++){
         Str1[i]= rfid.read();
@@ -75,6 +76,7 @@ void print_serial()
       sprintf(b, "%X", Str1[p]); //konverterer hex til string
       RFIDserial += b;  // legger neste brikke inn
     }
+    Serial.println(RFIDserial);
     if(RFIDserial != last){
       delay(10);
       if(RFIDserial == "FFFFFFFFFFFFD0"){
@@ -95,8 +97,6 @@ void read_serial() {
   set_flag();
   print_serial();
   delay(100);
-  
-
  
 }
 

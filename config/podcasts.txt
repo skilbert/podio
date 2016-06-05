@@ -2,11 +2,7 @@
 
 #nrk1
 
-*20sporsmal
-http://podkast.nrk.no/program/20_spoersmaal.rss
-
 *dagsnytt
 http://podkast.nrk.no/program/dagsnytt.rss
 
-*herreavdelingen
-http://podkast.nrk.no/program/herreavdelingen.rss
+

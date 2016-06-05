@@ -26,12 +26,13 @@ public class Maintenance implements Runnable {
 			int i = 0;
 			HashMap<String, String> stationList = handler.radios.getStations();
 			for(Map.Entry<String,String> stationEntry : stationList.entrySet()){
-				if(handler.radioArr[i] == null){
+				if(handler.radioArr[i] != null){
 					LiveRadio tmp = new LiveRadio(stationEntry.getValue());
 					handler.radioArr[i] = new Thread(tmp);
-					System.out.println("Radiostation is reset");
+					i++;
 				}
 			}
+			System.out.println("Radiostation is reset");
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
