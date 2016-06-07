@@ -8,11 +8,19 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+/*
+ * class for creating a live playback from a url. Because it it will cause problems if it runs in the mainThread we implement Runnable and run all stations as a Thread. 
+ * (The problemes with running it in main is that we can not handle other events while we play radio)
+ * It is stopped with a interupt and started with run();
+ */
 public class LiveRadio implements Runnable{
 	private SourceDataLine line;
 	private AudioInputStream din = null;
 	AudioInputStream in;
 	byte[] data = null;
+	/*
+	 * constructor receives the url and generates a audioinputstream
+	 */
 	public LiveRadio(String url){
 		try{
 			in = AudioSystem.getAudioInputStream(new URL(url));
@@ -20,10 +28,21 @@ public class LiveRadio implements Runnable{
 			System.out.println("Something went wrong when creating radiostream: "+e.getMessage());
 		}
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 * 
+	 * Must implement because of Runnable.
+	 * Calls start()
+	 */
 	public void run(){
 		System.out.println("Radio is playing");
 		start();
 	}
+	/*
+	 * We generate the formats and setup a audioinput stream with that format. 
+	 * After this we generate the line, open and start. It will then run in the next "while" until interupted or the line is closed by the host. 
+	 */
 	public void start(){
 	    try {
 	        AudioFormat baseFormat = in.getFormat();
@@ -64,6 +83,9 @@ public class LiveRadio implements Runnable{
 	        }
 	    }
 	}
+	/*
+	 * Closes the radio stream, before the interup. 
+	 */
 	public void stop(){
 		try{
 	        line.drain();

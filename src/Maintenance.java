@@ -1,12 +1,22 @@
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Class for maintaining the radiostations. To close a live playback from the internett the thread is intrerupted an killed.
+ * This class handles setting them back up
+ */
 public class Maintenance implements Runnable {
 	Handler handler;
 	public Maintenance(Handler handler){
 		this.handler = handler;
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 * 
+	 * Because it is a thread we need run(). We enter a sync on runntimeLOCK and sleep until we receive a notification.
+	 * After notification we call resetRadio();
+	 */
 	public void run(){
 	    synchronized(Handler.runntimeLOCK){
 	    	while(true){
@@ -20,7 +30,9 @@ public class Maintenance implements Runnable {
 	        }
 	    }
 	}
-	
+	/*
+	 * resetRadio() sets up the radioArr again for reasons explaned above. 
+	 */
 	private void resetRadio(){
 		try{
 			int i = 0;

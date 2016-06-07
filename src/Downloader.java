@@ -1,13 +1,23 @@
 import java.net.*;
 import java.io.*;
-
+/*
+ * Class for downloading Mp3 from a URL
+ */
 class Downloader{
 	private String url;
 	private String filename;
+	
+	/*
+	 * Constructor. Pass URL and filename to it so we are ready to start
+	 */
     public Downloader(String url, String filename){
     	this.url = url;
     	this.filename = filename;
     }
+    /*
+     * Starts the download. Opens the connection, creates output file (to preset destination)
+     * Then creates buffer (4gb) and downloads it. File is then closed. 
+     */
     public void start(){
     	System.out.println("Downloading "+filename);
     	try{

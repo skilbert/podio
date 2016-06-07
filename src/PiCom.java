@@ -8,13 +8,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
+/*
+ * Class for speaking with the Arduino. This involves listening for serial input. 
+ * This method contains methods for sending to the Arduino, as this was a part of a early plan, but is no longer in use. 
+ * After it is initialized we add eventListeners and the rest is handled by serialEvent() and handleInput()
+ */
 public class PiCom implements SerialPortEventListener{
 	SerialPort serialPort = null;
 	
     private static final String PORT_NAMES[] = { 
  //           "/dev/tty.usbmodem", // Mac OS X
  //           "/dev/usbdev", // Linux
-           "/dev/ttyACM5", // Linux
+           "/dev/ttyACM0", // Linux
 //            "/dev/serial", // Linux
     		//"/dev/sda1",
 //            "COM3", // Windows
@@ -36,12 +41,12 @@ public class PiCom implements SerialPortEventListener{
 	public void initialize() {
         // the next line is for Raspberry Pi and 
         // gets us into the while loop and was suggested here was suggested http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM5");
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
 	
 		CommPortIdentifier portId = null;
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 		
-		//First, Find an instance of serial port as set in PORT_NAMES.
+		//First we need to find an instance of serial port as set in PORT_NAMES.
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
 			for (String portName : PORT_NAMES) {
@@ -93,9 +98,9 @@ public class PiCom implements SerialPortEventListener{
         }
     }
 
-    //
-    // This should be called when you stop using the port
-    //
+    /*
+     * should be used when we close the connection
+     */
     public synchronized void close() {
         if ( serialPort != null ) {
             serialPort.removeEventListener();
@@ -103,9 +108,13 @@ public class PiCom implements SerialPortEventListener{
         }
     }
 
-    //
-    // Handle serial port event
-    //
+
+    /*
+     * (non-Javadoc)
+     * @see gnu.io.SerialPortEventListener#serialEvent(gnu.io.SerialPortEvent)
+     * 
+     * Handle serial event. Reads it an passes it to handleInput()
+     */
     public synchronized void serialEvent(SerialPortEvent oEvent) {
         //System.out.println("Event received: " + oEvent.toString());
     	if(oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE){
@@ -122,6 +131,11 @@ public class PiCom implements SerialPortEventListener{
     	    }
     	}
     }
+    /*
+     * Dirty and a non-impressive way of solving this.. Every "pod" has two rfid tags so it can be used two ways. 
+     * To stop the radio streams we use a sleep(10) (also not a very good solution, but it is to sort out the threads.
+     * Would make a sleeker solution if we had more time or in new version.
+     */
     private void handleInput(String inputLine){
         if(inputLine.equals("start 2724C2A0")){
             handler.mp3Arr[0].start();

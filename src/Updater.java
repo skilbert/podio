@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Class for updating the podcasts. We generate a versions.txt each time this is run, and we check it for changes. 
+ * To compare we have the orginal and create a tempVersions.txt which is later renamed and to versions.txt
+ */
 public class Updater {
 	private Podcasts podcasts;
 	private String tmpFilepath;
@@ -14,7 +18,10 @@ public class Updater {
 	private String[][] names;
 	PrintWriter write;
 	
-	
+	/*
+	 * Constructor gets a object of podcasts and the filepath for versions.txt
+	 * Then generates a new printWriter
+	 */
 	public Updater(Podcasts podcasts, String filepath){
 		this.podcasts = podcasts;
 		this.tmpFilepath = filepath+"tmpVersion.txt";
@@ -27,11 +34,17 @@ public class Updater {
 		}
 		names = new String[10][10];
 	}
-	
+	/*
+	 * updates the podcasts if needed and cleans after it is done
+	 */
 	public void updateEverything(){	
 		checkVersion();
 		clean();
 	}
+	/*
+	 * We start by checking the versions. It starts by reading the document and storing what we need. 
+	 * We then check this information with the information online. We use the XMLparser for this. This parses each URL from the Podcasts object and checks for changes against the document. 
+	 */
 	private void checkVersion(){
 		//first we read the document with the current versions of podcasts
 		String[][] versions = new String[10][10]; // supports 10 channels with 10 programs for each. Easy to change
@@ -53,7 +66,7 @@ public class Updater {
 			System.out.println("Something is wrong with the version file, or it is not present");
 			System.out.println(e.getMessage());
 		}
-		
+		//Then read the online information
 		int i = -1;
 		int j = -1;
 		HashMap<String, Station> stationList = podcasts.getStations();
@@ -81,11 +94,18 @@ public class Updater {
 			}
 		}
 	}
+	/*
+	 * Downloads the file if we do not have the newest. 
+	 * Adds TMP to the title because we want to download while we listen to the last version
+	 */
 	private void download(XMLParser xmlParser, String name){
 		//this could be done in seperate threads, but I don't see why we should
 		String tmpName = "TMP"+name;
 		new Downloader(xmlParser.getMp3()[0], tmpName).start();
 	}
+	/*
+	 * This cleans after we are done. It swaps the TMPfile with the one we want so we have the newest version. It also does this for the versions.txt
+	 */
 	private void clean(){
 		write.close();
 		try{
@@ -103,13 +123,7 @@ public class Updater {
 				for(int j = 0; j < names[0].length; j++){
 					if(names[i][j] != null){
 						File file = new File("src/file/TMP"+names[i][j]+".mp3");
-						if(file.exists()){
-							//check if it is in use right now
-							//It looks like this is not needed
-							//It just continiues to play, and next time it is started it
-							//plays the new file we downloaded and renamed. Guess it is buffering it all at once
-							
-							
+						if(file.exists()){						
 							File oldfile = new File("src/file/"+names[i][j]+".mp3");
 							oldfile.delete();
 							File newName = new File("src/file/"+names[i][j]+".mp3");
